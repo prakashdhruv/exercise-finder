@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Search Results</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Search Results</h1>
+        
+        <a href="/" class="btn btn-primary mb-4">Go Back to Home</a>
+
+        <div class="mb-4 info-box">
+            <p>
+                <strong>Equipment:</strong> {{ equipment.title() if equipment else 'Not specified' }} &bull;
+                <strong>Level:</strong> {{ level.title() if level else 'Not specified' }} &bull;
+                <strong>Muscle Group:</strong> {{ muscle.title() if muscle else 'Not specified' }}
+            </p>
+        </div>
+
+        <div id="results" class="mt-4">
+            {% if exercises %}
+                <ul class="list-group">
+                    {% for exercise in exercises %}
+                        <li class="list-group-item">
+                            <strong>Name:</strong> {{ exercise.name }}<br>
+                            <strong>Category:</strong> {{ exercise.category }}<br>
+                            <strong>Instructions:</strong> <pre>{{ exercise.instructions }}</pre><br>
+                            <strong>Images:</strong>
+                            <div>
+                                {% for image in exercise.images %}
+                                    <img src="{{ image }}" alt="{{ exercise.name }}" style="max-width: 300px; height: auto; margin-right: 10px;">
+                                {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="mt-4">
+                    {% if current_page > 1 %}
+                        <a href="{{ url_for('search', query=request.args.get('query'), page=current_page - 1) }}" class="btn btn-secondary">Previous</a>
+                    {% endif %}
+                    
+                    <span class="mx-2">Page {{ current_page }}</span>
+
+                    {% if exercises|length == 10 %}
+                        <a href="{{ url_for('search', query=request.args.get('query'), page=current_page + 1) }}" class="btn btn-secondary">Next</a>
+                    {% endif %}
+                </div>
+
+            {% else %}
+                <p>No exercises found matching your criteria.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
